@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Michroma:wght@400;700&display=swap" rel="stylesheet">
+    <title>1912 | Online</title>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --accent: #3b82f6;
+            --danger: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--light); color: var(--dark); line-height: 1.6; }
+
+        /* Navigation */
+        nav {
+            background: var(--dark);
+            color: white;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo { 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-family: 'Michroma', sans-serif; 
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: 900;
+            background: linear-gradient(to right, #fff 95%, transparent 95%);
+            -webkit-background-clip: text;
+            display: inline-block;
+        }
+
+        /* Hamburger & Menu */
+        .hamburger { display: flex; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1001; }
+        .hamburger div { width: 30px; height: 3px; background-color: white; transition: 0.3s; }
+
+        .menu-overlay {
+            height: 100%; width: 0; position: fixed; z-index: 1000;
+            top: 0; left: 0; background-color: var(--dark);
+            overflow-x: hidden; transition: 0.5s;
+        }
+
+        .overlay-content { position: relative; top: 20%; width: 100%; text-align: center; }
+        .menu-overlay span {
+            padding: 15px; text-decoration: none; font-size: 36px;
+            color: #818181; display: block; transition: 0.3s; cursor: pointer;
+        }
+        .menu-overlay span:hover { color: #f1f1f1; }
+        .close-btn { position: absolute; top: 20px; right: 45px; font-size: 60px !important; }
+
+        /* Sections */
+        .container { padding: 2rem 5%; max-width: 1200px; margin: auto; }
+        .page { display: none; }
+        .active { display: block; }
+
+        /* Landing Page */
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            background: linear-gradient(rgba(30, 41, 59, 0.8), rgba(30, 41, 59, 0.8)), 
+                        url('1778251701411.png');
+            background-size: cover; color: white; border-radius: 15px;
+        }
+        .btn {
+            background: var(--primary); color: white; padding: 12px 30px;
+            border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; margin-top: 20px;
+        }
+
+        /* Product Grid */
+        .product-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem; margin-top: 2rem;
+        }
+        .card {
+            background: white; border-radius: 10px; padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: transform 0.3s; cursor: pointer;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; border-radius: 5px; height: 200px; object-fit: cover; }
+        .card h3 { margin: 10px 0; }
+        .price { color: var(--primary); font-weight: bold; font-size: 1.2rem; }
+
+        /* Detail Page */
+        .detail-view { display: flex; gap: 3rem; background: white; padding: 2rem; border-radius: 15px; flex-wrap: wrap; }
+        .detail-img { flex: 1; min-width: 300px; border-radius: 10px; }
+        .detail-info { flex: 1; min-width: 300px; }
+        .specs { margin: 20px 0; list-style: none; }
+        .specs li { padding: 8px 0; border-bottom: 1px solid #eee; }
+
+        /* Admin Styles */
+        .admin-form { background: white; padding: 2rem; border-radius: 10px; margin-bottom: 2rem; }
+        .admin-form input { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ddd; border-radius: 4px; }
+        .admin-list-item { 
+            display: flex; justify-content: space-between; align-items: center; 
+            background: white; padding: 10px 20px; margin-bottom: 10px; border-radius: 8px;
+            border-left: 5px solid var(--primary);
+        }
+
+        /* Account/Checkout */
+        .bank-details { background: #e2e8f0; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        input[type="email"] { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #cbd5e1; border-radius: 5px; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo" onclick="showPage('home')">1912 Online</div>
+        <div class="hamburger" onclick="toggleMenu()">
+            <div></div><div></div><div></div>
+        </div>
+    </nav>
+
+    <div id="menuOverlay" class="menu-overlay">
+        <span class="close-btn" onclick="toggleMenu()">&times;</span>
+        <div class="overlay-content">
+            <span onclick="navigateTo('home')">Home</span>
+            <span onclick="navigateTo('products')">Store</span>
+            <span onclick="navigateTo('admin')" style="font-size: 18px; margin-top: 40px; opacity: 0.6;">Admin Dashboard</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <section id="home" class="page active">
+            <div class="hero">
+                <h1>High-Performance Computing</h1>
+                <p>Find the perfect workstation for your professional needs.</p>
+                <button class="btn" onclick="showPage('products')">Browse Catalog</button>
+            </div>
+        </section>
+
+        <section id="products" class="page">
+            <h2>Available Inventory</h2>
+            <div id="product-list" class="product-grid"></div>
+        </section>
+
+        <section id="details" class="page">
+            <button onclick="showPage('products')" style="margin-bottom: 20px; cursor:pointer; background:none; border:none; color:var(--primary); font-weight:bold;">← Back to Shop</button>
+            <div id="detail-content"></div>
+        </section>
+
+        <section id="admin" class="page">
+            <h2>Admin Dashboard</h2>
+            <div class="admin-form">
+                <h3>Add New Product</h3>
+                <input type="text" id="admin-name" placeholder="Product Name">
+                <input type="text" id="admin-price" placeholder="Price (e.g. R 19,922.47)">
+                <input type="text" id="admin-cpu" placeholder="CPU">
+                <input type="text" id="admin-ram" placeholder="RAM">
+                <input type="text" id="admin-storage" placeholder="Storage Space">
+                <input type="text" id="admin-img" placeholder="Image Filename or URL">
+                <button class="btn" onclick="addNewProduct()" style="width: 100%;">Add Product to Store</button>
+            </div>
+            <h3>Manage Current Products</h3>
+            <div id="admin-inventory-list"></div>
+        </section>
+
+        <section id="checkout" class="page">
+            <h2>Complete Your Order</h2>
+            <div class="bank-details">
+                <h3>Our Banking Details</h3>
+                <p><strong>Bank:</strong> First National Bank (FNB)</p>
+                <p><strong>Account Name:</strong> 1912 Online</p>
+                <p><strong>Account Number:</strong> 62901474130</p>
+                <p><strong>Reference:</strong> [Your Name + Product]</p>
+            </div>
+            
+            <div style="background: white; padding: 2rem; border-radius: 10px;">
+                <h3>Request Official Invoice</h3>
+                <p>Enter your email below. Our system will send an invoice for the <span id="selected-item-name"></span>.</p>
+                <input type="email" id="user-email" placeholder="Enter your email address" required>
+                <button class="btn" onclick="sendInvoice()">Send My Invoice</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // INITIAL INVENTORY LOGIC
+        let inventory = JSON.parse(localStorage.getItem('1912_inventory')) || [
+            { id: 1, name: "HP ProBook 4 G1a 14\" AI Notebook", price: "R 19,922.47", ram: "16GB", storage: "512GB SSD", cpu: "Ryzen 5-230", img: "IMG-20260507-WA0013.jpg" },
+            { id: 2, name: "HP 290 G9 Desktop", price: "R 11,357.66", ram: "8GB", storage: "512GB SSD", cpu: "Core-i5", img: "IMG-20260507-WA0015.jpg" }
+        ];
+
+        function toggleMenu() {
+            const menu = document.getElementById("menuOverlay");
+            menu.style.width = (menu.style.width === "100%") ? "0" : "100%";
+        }
+
+        function navigateTo(pageId) {
+            toggleMenu();
+            showPage(pageId);
+        }
+
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            window.scrollTo(0,0);
+            if(pageId === 'admin') renderAdminList();
+        }
+
+        function loadProducts() {
+            const list = document.getElementById('product-list');
+            list.innerHTML = inventory.map(item => `
+                <div class="card" onclick="viewDetails(${item.id})">
+                    <img src="${item.img}" onerror="this.src='https://via.placeholder.com/300x200?text=Computer'">
+                    <h3>${item.name}</h3>
+                    <p class="price">${item.price}</p>
+                </div>
+            `).join('');
+        }
+
+        function viewDetails(id) {
+            selectedProduct = inventory.find(p => p.id === id);
+            const content = document.getElementById('detail-content');
+            content.innerHTML = `
+                <div class="detail-view">
+                    <img src="${selectedProduct.img}" class="detail-img" onerror="this.src='https://via.placeholder.com/300x200?text=Computer'">
+                    <div class="detail-info">
+                        <h1>${selectedProduct.name}</h1>
+                        <p class="price" style="font-size: 2rem;">${selectedProduct.price}</p>
+                        <ul class="specs">
+                            <li><strong>CPU:</strong> ${selectedProduct.cpu}</li>
+                            <li><strong>RAM:</strong> ${selectedProduct.ram}</li>
+                            <li><strong>Space:</strong> ${selectedProduct.storage}</li>
+                        </ul>
+                        <button class="btn" onclick="proceedToCheckout()">Buy This Computer</button>
+                    </div>
+                </div>
+            `;
+            showPage('details');
+        }
+
+        // ADMIN FUNCTIONS
+        function addNewProduct() {
+            const name = document.getElementById('admin-name').value;
+            const price = document.getElementById('admin-price').value;
+            if(!name || !price) return alert("Product Name and Price are required!");
+
+            const newProd = {
+                id: Date.now(),
+                name: name,
+                price: price,
+                cpu: document.getElementById('admin-cpu').value || "N/A",
+                ram: document.getElementById('admin-ram').value || "N/A",
+                storage: document.getElementById('admin-storage').value || "N/A",
+                img: document.getElementById('admin-img').value || "https://via.placeholder.com/300"
+            };
+
+            inventory.push(newProd);
+            saveToStorage();
+            alert("Product added successfully!");
+            document.querySelectorAll('.admin-form input').forEach(input => input.value = "");
+            renderAdminList();
+        }
+
+        function deleteProduct(id) {
+            if(confirm("Are you sure you want to delete this product?")) {
+                inventory = inventory.filter(p => p.id !== id);
+                saveToStorage();
+                renderAdminList();
+            }
+        }
+
+        function renderAdminList() {
+            const list = document.getElementById('admin-inventory-list');
+            list.innerHTML = inventory.map(item => `
+                <div class="admin-list-item">
+                    <span><strong>${item.name}</strong> - ${item.price}</span>
+                    <button onclick="deleteProduct(${item.id})" style="color:red; border:none; background:none; cursor:pointer; font-weight:bold;">Delete</button>
+                </div>
+            `).join('');
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('1912_inventory', JSON.stringify(inventory));
+            loadProducts();
+        }
+
+        function proceedToCheckout() {
+            document.getElementById('selected-item-name').innerText = selectedProduct.name;
+            showPage('checkout');
+        }
+
+        function sendInvoice() {
+            const email = document.getElementById('user-email').value;
+            if(!email) return alert("Please enter an email");
+
+            emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', {
+                to_email: email,
+                product_name: selectedProduct.name,
+                price: selectedProduct.price,
+                specs: `${selectedProduct.cpu}, ${selectedProduct.ram}`
+            }).then(() => {
+                alert("Invoice sent to " + email);
+                showPage('home');
+            }, (err) => {
+                alert("Invoice simulated for " + selectedProduct.name + " to " + email);
+            });
+        }
+
+        (function() { emailjs.init("YOUR_PUBLIC_KEY"); })();
+        loadProducts();
+    // Add this variable at the top of your <script>
+const ADMIN_PASSWORD = "1912"; // You can change this to your own secret code
+
+function navigateTo(pageId) {
+    if (pageId === 'admin') {
+        const entry = prompt("Please enter the Admin Access Code:");
+        if (entry !== ADMIN_PASSWORD) {
+            alert("Access Denied: Incorrect Code.");
+            toggleMenu(); // Close the menu anyway
+            return;
+        }
+    }
+    toggleMenu();
+    showPage(pageId);
+}
+
+    </script>
+    <footer style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #cbd5e1; color: var(--dark);">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; padding-bottom: 30px;">
+        
+        <div>
+            <h4 style="margin-bottom: 15px; font-family: 'Michroma', sans-serif; font-size: 0.9rem;">Contact Us</h4>
+            <p><strong>Phone:</strong> 082 690 8372</p>
+            <p><strong>Info:</strong> Info@1912Online.co.za</p>
+            <p><strong>Finance:</strong> Finance@1912Online.co.za</p>
+        </div>
+
+        <div>
+            <h4 style="margin-bottom: 15px; font-family: 'Michroma', sans-serif; font-size: 0.9rem;">Visit Us</h4>
+            <p>9 G Leith Street,</p>
+            <p>Phillip Nel Park,</p>
+            <p>Pretoria West</p>
+        </div>
+
+        <div>
+            <h4 style="margin-bottom: 15px; font-family: 'Michroma', sans-serif; font-size: 0.9rem;">Operating Hours</h4>
+            <p>Mon - Fri: 08:00 - 17:00</p>
+            <p>Sat: 09:00 - 13:00</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 20px 0; border-top: 1px solid #e2e8f0; font-size: 0.8rem; color: #64748b;">
+        &copy; 2026 1912 Online. All Rights Reserved.
+    </div>
+</footer>
+
+</body>
+</html>
